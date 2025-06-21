@@ -1,5 +1,6 @@
 import React from 'react';
-import Charts from './charts'; // Make sure the file is named Charts.js or Charts.jsx
+import Charts from './charts'; 
+import { Link } from 'react-router-dom';
 
 const pendingInvoices = [
   {
@@ -10,7 +11,7 @@ const pendingInvoices = [
     charge: "165,000",
     date: "06/02/2024",
   },
-  // You can add more entries as needed
+ 
 ];
 
 const Dashboard = () => {
@@ -18,65 +19,72 @@ const Dashboard = () => {
     <div className="container-fluid">
       {/* Page Title */}
       <div className="d-flex justify-content-between align-items-center mb-4">
-        {/* <h1 className="h4 mb-4">Overview</h1> */}
-        {/* <h2 className="fs-4 fw-semibold mb-4">Overview</h2> */}
         <h2 className="fs-3 fw-bold">Overview</h2>
 
       </div>
 
       {/* Summary Cards */}
       <div className="row mb-4">
-        {/* Parcels */}
+        {/* Shipments */}
         <div className="col-md-3">
-          <div className="card shadow-sm mb-3">
-            <div className="card-body p-3">
-              <h6 className="text-muted mb-1" style={{ fontSize: '0.85rem' }}>Parcels</h6>
-              <div className="fw-bold mb-2" style={{ fontSize: '1.5rem' }}>170</div>
-              <p className="mb-0" style={{ fontSize: '0.75rem', color: '#6c757d' }}>
-                <span className="text-success">+5%</span> increase vs last month
-              </p>
+          <Link to='/list' style={{ textDecoration: 'none', color: 'inherit' }}>
+            <div className="card shadow-sm mb-3">
+              <div className="card-body p-3">
+                <h6 className="text-muted mb-1" style={{ fontSize: '0.85rem' }}>Shipments</h6>
+                <div className="fw-bold mb-2" style={{ fontSize: '1.5rem' }}>170</div>
+                <p className="mb-0" style={{ fontSize: '0.75rem', color: '#6c757d' }}>
+                  <span className="text-success">+5%</span> increase vs last month
+                </p>
+              </div>
             </div>
-          </div>
+          </Link>
         </div>
 
         {/* Customers */}
         <div className="col-md-3">
-          <div className="card shadow-sm mb-3">
-            <div className="card-body p-3">
-              <h6 className="text-muted mb-1" style={{ fontSize: '0.85rem' }}>Customers</h6>
-              <div className="fw-bold mb-2" style={{ fontSize: '1.5rem' }}>32</div>
-              <p className="mb-0" style={{ fontSize: '0.75rem', color: '#6c757d' }}>
-                <span className="text-success">+5%</span> increase vs last month
-              </p>
+          <Link to='/customer' style={{ textDecoration: 'none', color: 'inherit' }}>
+            <div className="card shadow-sm mb-3">
+              <div className="card-body p-3">
+                <h6 className="text-muted mb-1" style={{ fontSize: '0.85rem' }}>Customers</h6>
+                <div className="fw-bold mb-2" style={{ fontSize: '1.5rem' }}>32</div>
+                <p className="mb-0" style={{ fontSize: '0.75rem', color: '#6c757d' }}>
+                  <span className="text-success">+5%</span> increase vs last month
+                </p>
+              </div>
             </div>
-          </div>
+          </Link>
         </div>
-
-        {/* Shipments */}
+        
+        {/* Parcels */}
         <div className="col-md-3">
-          <div className="card shadow-sm mb-3">
-            <div className="card-body p-3">
-              <h6 className="text-muted mb-1" style={{ fontSize: '0.85rem' }}>Shipments</h6>
-              <div className="fw-bold mb-2" style={{ fontSize: '1.5rem' }}>26</div>
-              <p className="mb-0" style={{ fontSize: '0.75rem', color: '#6c757d' }}>
-                <span className="text-success">+5%</span> increase vs last month
-              </p>
+          <Link to='/' style={{ textDecoration: 'none', color: 'inherit' }}>
+            <div className="card shadow-sm mb-3">
+              <div className="card-body p-3">
+                <h6 className="text-muted mb-1" style={{ fontSize: '0.85rem' }}>Parcels</h6>
+                <div className="fw-bold mb-2" style={{ fontSize: '1.5rem' }}>26</div>
+                <p className="mb-0" style={{ fontSize: '0.75rem', color: '#6c757d' }}>
+                  <span className="text-success">+5%</span> increase vs last month
+                </p>
+              </div>
             </div>
-          </div>
+          </Link>
         </div>
 
         {/* Invoices */}
         <div className="col-md-3">
-          <div className="card shadow-sm mb-3">
-            <div className="card-body p-3">
-              <h6 className="text-muted mb-1" style={{ fontSize: '0.85rem' }}>Invoices</h6>
-              <div className="fw-bold mb-2" style={{ fontSize: '1.5rem' }}>5</div>
-              <p className="mb-0" style={{ fontSize: '0.75rem', color: '#6c757d' }}>
-                <span className="text-success">+5%</span> increase vs last month
-              </p>
+          <Link to='/invoice' style={{ textDecoration: 'none', color: 'inherit' }}>
+            <div className="card shadow-sm mb-3">
+              <div className="card-body p-3">
+                <h6 className="text-muted mb-1" style={{ fontSize: '0.85rem' }}>Invoices</h6>
+                <div className="fw-bold mb-2" style={{ fontSize: '1.5rem' }}>5</div>
+                <p className="mb-0" style={{ fontSize: '0.75rem', color: '#6c757d' }}>
+                  <span className="text-success">+5%</span> increase vs last month
+                </p>
+              </div>
             </div>
-          </div>
+          </Link>
         </div>
+        
       </div>
 
       {/* Charts Section */}

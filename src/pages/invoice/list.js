@@ -100,7 +100,7 @@ const InvoiceList = ({ shipmentId }) => {
           <tr>
             <th>Invoice No.</th>
             <th>Customer</th>
-            <th>Shipment</th>
+            {/* <th>Shipment</th> */}
             <th>Date</th>
             <th>Due date</th>
             <th>Amount</th>
@@ -113,7 +113,7 @@ const InvoiceList = ({ shipmentId }) => {
             <tr key={idx}>
               <td className="fw-semibold">{invoice.id}</td>
               <td>{invoice.customer}</td>
-              <td>{invoice.shipment}</td>
+              {/* <td>{invoice.shipment}</td> */}
               <td>{invoice.date}</td>
               <td>{invoice.dueDate}</td>
               <td>{invoice.amount}</td>

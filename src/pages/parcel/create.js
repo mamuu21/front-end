@@ -9,6 +9,7 @@ const ParcelCreate = ({ show, onClose, onAddParcel }) => {
     recipient: '',
     charge: '',
     commodity: '',
+    description: '',
     payment: 'Unpaid',
     status: 'Pending'
   });
@@ -30,6 +31,7 @@ const ParcelCreate = ({ show, onClose, onAddParcel }) => {
       recipient: '',
       charge: '',
       commodity: '',
+      description: '',
       payment: 'Unpaid',
       status: 'Pending'
     });
@@ -120,7 +122,16 @@ const ParcelCreate = ({ show, onClose, onAddParcel }) => {
 
           <Form.Group className="mb-2">
             <Form.Label>Commodity</Form.Label>
-            <Form.Control name="commodity" value={formData.commodity} onChange={handleChange} required />
+            <Form.Select name="commodity" value={formData.commodity} onChange={handleChange}>
+              <option value='Box'>Box</option>
+              <option value='Parcel'>Parcel</option>
+              <option value='Envelope'>Envelope</option>
+            </Form.Select>
+          </Form.Group>
+
+          <Form.Group className='mb-2'>
+            <Form.Label>Description</Form.Label>
+            <Form.Control name="description" value={formData.description} onChange={handleChange} required />
           </Form.Group>
 
           <Form.Group className="mb-2">

@@ -2,6 +2,8 @@ import React from 'react';
 import { Card, Button, Nav, Table, Tabs, Tab } from 'react-bootstrap';
 import ParcelList from "../parcel/list";
 import InvoiceList from "../invoice/list";
+import DocumentList from "../document/list";
+import CustomerList from "../customer/list";
 
 
 const ShipmentDetails = ({ shipment }) => {
@@ -130,10 +132,10 @@ const ShipmentDetails = ({ shipment }) => {
           <InvoiceList shipmentId={shipment} />
         </Tab>
         <Tab eventKey="documents" title="Documents">
-          <ParcelList shipmentId={shipment} />
+          <DocumentList shipmentId={shipment} />
         </Tab>
         <Tab eventKey="customers" title="Customers">
-          <ParcelList shipmentId={shipment} />
+          <CustomerList shipmentId={shipment} />
         </Tab>
         <Tab eventKey="gps" title="Live GPS"></Tab>
       </Tabs>

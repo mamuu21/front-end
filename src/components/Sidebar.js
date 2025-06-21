@@ -18,7 +18,7 @@ const Sidebar = () => {
       {/* Navigation */}
       <ul className="nav flex-column mt-4">
         <li className="nav-item mb-3 text-center">
-          <NavLink to="/" className={({ isActive }) => `sidebar-btn ${isActive ? 'active' : ''}`}>
+          <NavLink to="/dashboard" className={({ isActive }) => `sidebar-btn ${isActive ? 'active' : ''}`}>
             Dashboard
           </NavLink>
         </li>

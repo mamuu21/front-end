@@ -1,7 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from "react-router-dom";
 import  { useNavigate } from 'react-router-dom';
+
+import api from '../../utils/api';
 import ShipmentCreate from './create';
+
 import { Button, Table, Tabs, Tab, InputGroup, Form, Pagination, Modal, Dropdown } from 'react-bootstrap';
 import { FaPlus, FaPen, FaTrash, FaEye, FaSearch, FaFileExport, FaEllipsisH } from 'react-icons/fa';
 
@@ -36,22 +39,45 @@ const ShipmentList = () => {
   const [showCreateModal, setShowCreateModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const [selectedShipment, setSelectedShipment] = useState(null);
-
-  const [shipments, setShipments] = useState(() => {
-    const saved = localStorage.getItem('shipments');
-    return saved ? JSON.parse(saved) : [];
-  });
+  const [shipments, setShipments] = useState([])
 
   useEffect(() => {
-    localStorage.setItem("shipments", JSON.stringify(shipments));
-  }, [shipments]);
-
-  const handleAddShipment = (newShipment) => {
-    const shipmentWithId = {
-      ...newShipment,
-      id: newShipment.shipmentNo,
+    const fetchshipments = async () => {
+      try {
+        const response = await api.get('/shipments/');
+        const data = response.data;
+        setShipments(Array.isArray(data) ? data : data.results || []);
+        console.log("Fetched shipments:", response.data);
+      } catch (error) {
+        console.error('Failed to fetch shipments', error);
+      }
     };
-    setShipments([...shipments, shipmentWithId]);
+
+    fetchshipments();
+  }, []);
+
+  const handleAddShipment = async (newShipment) => {
+    try {
+      const token = localStorage.getItem('token');
+
+      console.log("Submitting shipment:", newShipment);
+
+
+      const response = await api.post('/shipments/', newShipment, {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      });
+
+      const savedShipment = response.data;
+
+      setShipments(prev => [...prev, savedShipment]);
+      alert("Shipment successfully created!");
+
+    } catch (error) {
+      console.error("Failed to add shipment", error.response?.data );
+      alert("Failed to add shipment. Please check your input and try again.");
+    }
   };
 
   const handleDeleteShipment = (id) => {
@@ -91,7 +117,7 @@ const ShipmentList = () => {
     ];
 
     const rows = filteredData.map(shipment => [
-      shipment.shipmentNo,
+      shipment.shipment_no,
       shipment.transport,
       shipment.vessel,
       `${shipment.weight} ${shipment.weightunit}`,
@@ -218,7 +244,7 @@ const ShipmentList = () => {
               {paginatedData.length > 0 ? (
                 paginatedData.map((item, idx) => (
                   <tr key={idx}>
-                    <td>{item.id}</td>
+                    <td>{item.shipment_no}</td>
                     <td>{item.transport}</td>
                     <td>{item.vessel}</td>
                     <td>{item.customers}</td>
@@ -230,7 +256,6 @@ const ShipmentList = () => {
                     <td>{item.steps}</td>
                     <td>{item.documents}</td>
                     <td>{getStatusBadge(item.status)}</td>
-
                     <td>
                         <Dropdown align="end">
                             <Dropdown.Toggle

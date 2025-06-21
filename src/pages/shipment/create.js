@@ -3,7 +3,7 @@ import { Modal, Button, Form, Row, Col, InputGroup } from 'react-bootstrap';
 
 const ShipmentCreate = ({ show, onClose, onAddShipment }) => {
     const [formData, setFormData] = useState({
-        shipmentNo: '',
+        shipment_no: '',
         transport: '',
         vessel: '',
         weight: '',
@@ -26,9 +26,8 @@ const ShipmentCreate = ({ show, onClose, onAddShipment }) => {
     e.preventDefault();
   
     // List of required fields
-    const requiredFields = ["shipmentNo", "vessel", "weight", "volume", "origin", "destination", "status"];
+    const requiredFields = ["shipment_no", "vessel", "weight", "volume", "origin", "destination", "status"];
   
-    // Check for missing fields
     const missingFields = requiredFields.filter(field => !formData[field]?.toString().trim());
   
     if (missingFields.length > 0) {
@@ -41,7 +40,7 @@ const ShipmentCreate = ({ show, onClose, onAddShipment }) => {
   
     // Reset form
     setFormData({
-      shipmentNo: '',
+      shipment_no: '',
       transport: '',
       vessel: '',
       weight: '',
@@ -68,8 +67,8 @@ const ShipmentCreate = ({ show, onClose, onAddShipment }) => {
             <Form.Label>Shipment No</Form.Label>
             <Form.Control
             type="text"
-            name="shipmentNo"
-            value={formData.shipmentNo}
+            name="shipment_no"
+            value={formData.shipment_no}
             onChange={handleChange}
             placeholder="Enter shipment number"
             required
@@ -98,7 +97,7 @@ const ShipmentCreate = ({ show, onClose, onAddShipment }) => {
             name="vessel"
             value={formData.vessel}
             onChange={handleChange}
-            placeholder="Enter vessel or vehicle name"
+            placeholder="Enter vessel name"
             required
             />
         </Form.Group>

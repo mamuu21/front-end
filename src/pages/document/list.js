@@ -1,66 +1,73 @@
 import React, { useEffect, useState } from 'react';
-import ParcelCreate from './create';
+import DocumentCreate from './create';
 import { Table, Button, Badge, Modal, Form, InputGroup, Pagination, Dropdown } from 'react-bootstrap';
 import { FaPlus, FaPen, FaTrash, FaEye, FaSearch, FaFileExport, FaEllipsisH } from 'react-icons/fa';
 
-const getStatusBadge = (status) => (
-  <Badge bg={status === 'In Transit' ? 'info' : 'secondary'}>{status}</Badge>
+const getTypeBadge = (type) => (
+  <Badge bg="primary">{type.replace('_', ' ')}</Badge>
 );
 
-const getPaymentBadge = (payment) => (
-  <Badge bg={payment === 'Paid' ? 'success' : 'warning'}>{payment}</Badge>
-);
-
-const ParcelList = ({ shipmentId }) => {
-  const [parcels, setParcels] = useState([]);
+const DocumentList = ({ shipmentId }) => {
+  const [documents, setDocuments] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
-  const [showCreateParcelModal, setShowCreateParcelModal] = useState(false);
+  const [showCreateDocumentModal, setShowCreateDocumentModal] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
-  const [selectedParcel, setSelectedParcel] = useState(null);
+  const [selectedDocument, setSelectedDocument] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 5;
 
   useEffect(() => {
     if (shipmentId) {
-      const dummyParcels = [
-        { id: 'PCL-04021-1', weight: '230 KGS', volume: '1750', recipient: 'Makuya', charge: '165,000', commodity: 'Electronics', payment: 'Paid', status: 'In Transit' },
-        { id: 'PCL-04021-2', weight: '110 KGS', volume: '1200', recipient: 'John Doe', charge: '85,000', commodity: 'Furniture', payment: 'Unpaid', status: 'Pending' }
+      const dummyDocuments = [
+        {
+          document_no: 'DOC0001',
+          document_type: 'invoice',
+          file: 'invoice1.pdf',
+          issued_date: '2024-01-01',
+          description: 'Invoice for shipment',
+        },
+        {
+          document_no: 'DOC0002',
+          document_type: 'packing_list',
+          file: 'packinglist.pdf',
+          issued_date: '2024-01-02',
+          description: 'Packing list for shipment',
+        }
       ];
-      setParcels(dummyParcels);
+      setDocuments(dummyDocuments);
     }
   }, [shipmentId]);
 
-  const handleAddParcel = (newParcel) => {
-    // Auto-generate parcel ID if not provided
-    newParcel.id = `PCL-${shipmentId}-${parcels.length + 1}`;
-    setParcels(prev => [...prev, newParcel]);
+  const handleAddDocument = (newDoc) => {
+    newDoc.document_no = `DOC000${documents.length + 1}`;
+    setDocuments(prev => [...prev, newDoc]);
   };
 
-  const handleDeleteClick = (parcel) => {
-    setSelectedParcel(parcel);
+  const handleDeleteClick = (doc) => {
+    setSelectedDocument(doc);
     setShowDeleteModal(true);
   };
 
   const confirmDelete = () => {
-    setParcels(parcels.filter(p => p.id !== selectedParcel.id));
+    setDocuments(documents.filter(d => d.document_no !== selectedDocument.document_no));
     setShowDeleteModal(false);
-    setSelectedParcel(null);
+    setSelectedDocument(null);
   };
 
-  const filteredParcels = parcels.filter(p =>
-    Object.values(p).some(val => val.toLowerCase().includes(searchQuery.toLowerCase()))
+  const filteredDocuments = documents.filter(d =>
+    Object.values(d).some(val => val.toLowerCase().includes(searchQuery.toLowerCase()))
   );
 
-  const paginatedParcels = filteredParcels.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
+  const paginatedDocuments = filteredDocuments.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
 
   const exportCSV = () => {
-    const headers = ['Parcel No.', 'Weight', 'Volume', 'Recipient', 'Charge', 'Commodity', 'Payment', 'Status'];
-    const rows = filteredParcels.map(p => [p.id, p.weight, p.volume, p.recipient, p.charge, p.commodity, p.payment, p.status]);
+    const headers = ['Document No.', 'Type', 'File', 'Issued Date', 'Description'];
+    const rows = filteredDocuments.map(d => [d.document_no, d.document_type, d.file, d.issued_date, d.description]);
     const csvContent = [headers.join(','), ...rows.map(row => row.join(','))].join('\n');
     const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
     const link = document.createElement('a');
     link.href = URL.createObjectURL(blob);
-    link.download = 'parcels.csv';
+    link.download = 'documents.csv';
     link.click();
     URL.revokeObjectURL(link.href);
   };
@@ -68,13 +75,13 @@ const ParcelList = ({ shipmentId }) => {
   return (
     <div className="table-responsive">
       <div className="d-flex justify-content-between align-items-center mb-3">
-        <h6 className="fw-bold">Parcels for Shipment: <span className="text-primary">{shipmentId}</span></h6>
+        <h6 className="fw-bold">Documents for Shipment: <span className="text-primary">{shipmentId}</span></h6>
         <div className="d-flex gap-2">
           <InputGroup size="sm">
             <InputGroup.Text><FaSearch /></InputGroup.Text>
             <Form.Control
               type="search"
-              placeholder="Search parcels..."
+              placeholder="Search documents..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
             />
@@ -88,10 +95,10 @@ const ParcelList = ({ shipmentId }) => {
 
           <Button
             variant="primary"
-            onClick={() => setShowCreateParcelModal(true)}
+            onClick={() => setShowCreateDocumentModal(true)}
             style={{ height: '50px', fontSize: '0.9rem', padding: '0.1rem' }}
           >
-            <FaPlus size={13} className="me-1" />  Add Parcel
+            <FaPlus size={13} className="me-1" />  Add Document
           </Button>
         </div>
       </div>
@@ -99,28 +106,22 @@ const ParcelList = ({ shipmentId }) => {
       <Table hover borderless size="sm" className="custom-table align-middle text-center">
         <thead className="table-header-bg">
           <tr>
-            <th>Parcel No.</th>
-            <th>Weight</th>
-            <th>Volume</th>
-            <th>Recipient</th>
-            <th>Charge</th>
-            <th>Commodity</th>
-            <th>Payment</th>
-            <th>Status</th>
+            <th>Document No.</th>
+            <th>Type</th>
+            <th>File</th>
+            <th>Issued Date</th>
+            <th>Description</th>
             <th>Actions</th>
           </tr>
         </thead>
         <tbody>
-          {paginatedParcels.map((parcel, idx) => (
+          {paginatedDocuments.map((doc, idx) => (
             <tr key={idx}>
-              <td className="fw-semibold">{parcel.id}</td>
-              <td>{parcel.weight}</td>
-              <td>{parcel.volume}</td>
-              <td>{parcel.recipient}</td>
-              <td>{parcel.charge}</td>
-              <td>{parcel.commodity}</td>
-              <td>{getPaymentBadge(parcel.payment)}</td>
-              <td>{getStatusBadge(parcel.status)}</td>
+              <td className="fw-semibold">{doc.document_no}</td>
+              <td>{getTypeBadge(doc.document_type)}</td>
+              <td>{doc.file}</td>
+              <td>{doc.issued_date}</td>
+              <td>{doc.description}</td>
               <td>
                 <Dropdown align="end">
                   <Dropdown.Toggle as="button" className="btn btn-light btn-sm border-0">
@@ -129,23 +130,23 @@ const ParcelList = ({ shipmentId }) => {
                   <Dropdown.Menu className="small">
                     <Dropdown.Item><FaEye className="me-2" />View</Dropdown.Item>
                     <Dropdown.Item><FaPen className="me-2" />Edit</Dropdown.Item>
-                    <Dropdown.Item onClick={() => handleDeleteClick(parcel)} className="text-danger"><FaTrash className="me-2" />Delete</Dropdown.Item>
+                    <Dropdown.Item onClick={() => handleDeleteClick(doc)} className="text-danger"><FaTrash className="me-2" />Delete</Dropdown.Item>
                   </Dropdown.Menu>
                 </Dropdown>
               </td>
             </tr>
           ))}
-          {paginatedParcels.length === 0 && (
+          {paginatedDocuments.length === 0 && (
             <tr>
-              <td colSpan="9" className="text-muted text-center py-3">No parcels found.</td>
+              <td colSpan="6" className="text-muted text-center py-3">No documents found.</td>
             </tr>
           )}
         </tbody>
       </Table>
 
-      {Math.ceil(filteredParcels.length / itemsPerPage) > 1 && (
+      {Math.ceil(filteredDocuments.length / itemsPerPage) > 1 && (
         <Pagination className="justify-content-center">
-          {[...Array(Math.ceil(filteredParcels.length / itemsPerPage))].map((_, i) => (
+          {[...Array(Math.ceil(filteredDocuments.length / itemsPerPage))].map((_, i) => (
             <Pagination.Item key={i} active={i + 1 === currentPage} onClick={() => setCurrentPage(i + 1)}>{i + 1}</Pagination.Item>
           ))}
         </Pagination>
@@ -154,21 +155,21 @@ const ParcelList = ({ shipmentId }) => {
       {/* Delete Modal */}
       <Modal show={showDeleteModal} onHide={() => setShowDeleteModal(false)} centered>
         <Modal.Header closeButton><Modal.Title>Confirm Deletion</Modal.Title></Modal.Header>
-        <Modal.Body>Are you sure you want to delete parcel <strong>{selectedParcel?.id}</strong>?</Modal.Body>
+        <Modal.Body>Are you sure you want to delete document <strong>{selectedDocument?.document_no}</strong>?</Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={() => setShowDeleteModal(false)}>Cancel</Button>
           <Button variant="danger" onClick={confirmDelete}>Delete</Button>
         </Modal.Footer>
       </Modal>
 
-      {/* Parcel Create Modal */}
-      <ParcelCreate
-        show={showCreateParcelModal}
-        onClose={() => setShowCreateParcelModal(false)}
-        onAddParcel={handleAddParcel}
+      {/* Document Create Modal */}
+      <DocumentCreate
+        show={showCreateDocumentModal}
+        onClose={() => setShowCreateDocumentModal(false)}
+        onAddDocument={handleAddDocument}
       />
     </div>
   );
 };
 
-export default ParcelList;
+export default DocumentList;
