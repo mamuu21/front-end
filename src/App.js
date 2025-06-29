@@ -13,6 +13,7 @@ import ShipmentList from './pages/shipment/list';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import Customer from './pages/customer/customers';
+import Parcel from './pages/parcel/parcels';
 
 // layout for auth pages
 const AuthLayout = ({ children }) => (
@@ -37,8 +38,9 @@ function App() {
     <Router>
       <Routes>
         {/* Auth pages */}
+        <Route path="/" element={<AuthLayout><Login /></AuthLayout>} /> 
         <Route path="/register" element={<AuthLayout><Register /></AuthLayout>} />
-        <Route path="/" element={<AuthLayout><Login /></AuthLayout>} />
+        <Route path="/login" element={<AuthLayout><Login /></AuthLayout>} />
 
         {/* Main pages */}
         <Route path="/dashboard" element={<MainLayout><Dashboard /></MainLayout>} />
@@ -49,6 +51,8 @@ function App() {
         <Route path="/shipment/:id" element={<MainLayout><ShipmentDetail /></MainLayout>} />
         <Route path="/list" element={<MainLayout><ShipmentList /></MainLayout>} />
         <Route path="/customer" element={<MainLayout><Customer /></MainLayout>} />
+        <Route path="/parcel" element={<MainLayout><Parcel /></MainLayout>} />
+
 
 
         {/* Fallback */}

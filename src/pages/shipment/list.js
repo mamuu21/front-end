@@ -247,8 +247,8 @@ const ShipmentList = () => {
                     <td>{item.shipment_no}</td>
                     <td>{item.transport}</td>
                     <td>{item.vessel}</td>
-                    <td>{item.customers}</td>
-                    <td>{item.parcels}</td>
+                    <td>{item.customer_count}</td>
+                    <td>{item.parcel_count}</td>
                     <td>{item.weight} {item.weightunit}</td>
                     <td>{item.volume} {item.volumeunit}</td>
                     <td>{item.origin}</td>

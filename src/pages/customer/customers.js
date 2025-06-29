@@ -268,6 +268,11 @@ const Customer = () => {
                                 <th>Phone</th>
                                 <th>Address</th>
                                 <th>Status</th>
+                                <th>Parcels</th>
+                                <th>Weight</th>
+                                {/* <th>Shipments</th> */}
+                                <th>Invoices Paid</th>
+                                <th>Shipment Nos</th>
                                 <th>Actions</th>
                             </tr>
                         </thead>
@@ -280,6 +285,15 @@ const Customer = () => {
                                     <td>{c.phone}</td>
                                     <td>{c.address}</td>
                                     <td>{getStatusBadge(c.status)}</td>
+                                    <td>{c.total_parcels}</td>
+                                    <td>{c.total_parcel_weight}</td>
+                                    {/* <td>{c.total_shipments}</td> */}
+                                    <td>{c.total_invoices_paid}</td>
+                                    <td>
+                                        {c.shipment_nos && c.shipment_nos.length > 0
+                                        ? c.shipment_nos.join(', ')
+                                        : 'None'}
+                                    </td>
                                     <td>
                                         <Dropdown align='end'>
                                             <Dropdown.Toggle

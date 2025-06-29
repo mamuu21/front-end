@@ -94,6 +94,31 @@ const Invoice = () => {
   const [filter, setFilter] = useState('All');
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [selectedInvoice, setSelectedInvoice] = useState(null);
+
+  const handleDeleteClick = (invoice) => {
+    setSelectedInvoice(invoice);
+    setShowDeleteModal(true);
+  };
+
+  const handleConfirmDelete = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      await api.delete(`/invoices/${selectedInvoice.id}/`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      setInvoices(prev => prev.filter(inv => inv.id !== selectedInvoice.id));
+      setShowDeleteModal(false);
+      setSelectedInvoice(null);
+      alert('Invoice deleted successfully!');
+    } catch (error) {
+      console.error('Failed to delete invoice:', error);
+      alert('Failed to delete invoice.');
+    }
+  };
+
+
 
   useEffect(() => {
     const fetchInvoices = async () => {
@@ -206,10 +231,29 @@ const Invoice = () => {
                         <FaEllipsisH />
                       </Dropdown.Toggle>
                       <Dropdown.Menu className="small">
-                        <Dropdown.Item><FaEye className="me-2" /> View Invoice</Dropdown.Item>
-                        <Dropdown.Item><FaPen className="me-2" /> Edit</Dropdown.Item>
-                        <Dropdown.Item className="text-danger"><FaTrash className="me-2" /> Delete</Dropdown.Item>
+                        <Dropdown.Item
+                          onClick={() => console.log('View Invoice', inv)}
+                          style={{ fontSize: '0.8rem', cursor: 'pointer' }}
+                        >
+                          <FaEye className="me-2" /> View Details
+                        </Dropdown.Item>
+
+                        <Dropdown.Item
+                          onClick={() => console.log('Edit Invoice', inv)}
+                          style={{ fontSize: '0.8rem', cursor: 'pointer' }}
+                        >
+                          <FaPen className="me-2" /> Edit Parcel
+                        </Dropdown.Item>
+
+                        <Dropdown.Item
+                          onClick={() => handleDeleteClick(inv)}
+                          className="text-danger"
+                          style={{ fontSize: '0.8rem', cursor: 'pointer' }}
+                        >
+                          <FaTrash className="me-2" /> Delete Invoice
+                        </Dropdown.Item>
                       </Dropdown.Menu>
+
                     </Dropdown>
                   </td>
                 </tr>
@@ -227,6 +271,20 @@ const Invoice = () => {
             ))}
           </Pagination>
         )}
+        
+        <Modal show={showDeleteModal} onHide={() => setShowDeleteModal(false)} centered>
+          <Modal.Header closeButton>
+            <Modal.Title>Confirm Deletion</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            Are you sure you want to delete invoice <strong>{selectedInvoice?.invoice_no}</strong>?
+          </Modal.Body>
+          <Modal.Footer>
+            <Button variant="secondary" onClick={() => setShowDeleteModal(false)}>Cancel</Button>
+            <Button variant="danger" onClick={handleConfirmDelete}>Delete</Button>
+          </Modal.Footer>
+        </Modal>
+
 
         <InvoiceModal show={showModal} onClose={() => setShowModal(false)} onAdd={handleAddInvoice} />
       </div>

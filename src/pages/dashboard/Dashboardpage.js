@@ -1,6 +1,7 @@
-import React from 'react';
+import React, {useState, useEffect} from 'react';
 import Charts from './charts'; 
 import { Link } from 'react-router-dom';
+import api from '../../utils/api';
 
 const pendingInvoices = [
   {
@@ -15,6 +16,39 @@ const pendingInvoices = [
 ];
 
 const Dashboard = () => {
+  const [counts,setCounts] = useState({
+    shipments: 0,
+    customers: 0,
+    parcels: 0,
+    invoices: 0
+  });
+
+  useEffect(() => {
+    const fetchCounts = async () => {
+      try {
+        const token = localStorage.getItem('token');
+        const headers = { Authorization: `Bearer ${token}` };
+
+        const [shipmentsRes, customersRes, parcelsRes, invoicesRes] = await Promise.all([
+          api.get('/shipments/', { headers }),
+          api.get('/customers/', { headers }),
+          api.get('/parcels/', { headers }),
+          api.get('/invoices/', { headers })
+        ]);
+        setCounts({
+          shipments: shipmentsRes.data.count || shipmentsRes.data.length || 0,
+          customers: customersRes.data.count || customersRes.data.length || 0,
+          parcels: parcelsRes.data.count || parcelsRes.data.length || 0,
+          invoices: invoicesRes.data.count || invoicesRes.data.length || 0
+        });
+      } catch (error) {
+        console.error('Failed to fetch dashboard counts:', error);
+      }
+    };
+
+    fetchCounts();
+  }, []);
+
   return (
     <div className="container-fluid">
       {/* Page Title */}
@@ -31,7 +65,9 @@ const Dashboard = () => {
             <div className="card shadow-sm mb-3">
               <div className="card-body p-3">
                 <h6 className="text-muted mb-1" style={{ fontSize: '0.85rem' }}>Shipments</h6>
-                <div className="fw-bold mb-2" style={{ fontSize: '1.5rem' }}>170</div>
+                <div className="fw-bold mb-2" style={{ fontSize: '1.5rem' }}>
+                  {counts.shipments}
+                </div>
                 <p className="mb-0" style={{ fontSize: '0.75rem', color: '#6c757d' }}>
                   <span className="text-success">+5%</span> increase vs last month
                 </p>
@@ -46,7 +82,9 @@ const Dashboard = () => {
             <div className="card shadow-sm mb-3">
               <div className="card-body p-3">
                 <h6 className="text-muted mb-1" style={{ fontSize: '0.85rem' }}>Customers</h6>
-                <div className="fw-bold mb-2" style={{ fontSize: '1.5rem' }}>32</div>
+                <div className="fw-bold mb-2" style={{ fontSize: '1.5rem' }}>
+                  {counts.customers}
+                </div>
                 <p className="mb-0" style={{ fontSize: '0.75rem', color: '#6c757d' }}>
                   <span className="text-success">+5%</span> increase vs last month
                 </p>
@@ -57,11 +95,13 @@ const Dashboard = () => {
         
         {/* Parcels */}
         <div className="col-md-3">
-          <Link to='/' style={{ textDecoration: 'none', color: 'inherit' }}>
+          <Link to='/parcel' style={{ textDecoration: 'none', color: 'inherit' }}>
             <div className="card shadow-sm mb-3">
               <div className="card-body p-3">
                 <h6 className="text-muted mb-1" style={{ fontSize: '0.85rem' }}>Parcels</h6>
-                <div className="fw-bold mb-2" style={{ fontSize: '1.5rem' }}>26</div>
+                <div className="fw-bold mb-2" style={{ fontSize: '1.5rem' }}>
+                  {counts.parcels}
+                </div>
                 <p className="mb-0" style={{ fontSize: '0.75rem', color: '#6c757d' }}>
                   <span className="text-success">+5%</span> increase vs last month
                 </p>
@@ -76,7 +116,9 @@ const Dashboard = () => {
             <div className="card shadow-sm mb-3">
               <div className="card-body p-3">
                 <h6 className="text-muted mb-1" style={{ fontSize: '0.85rem' }}>Invoices</h6>
-                <div className="fw-bold mb-2" style={{ fontSize: '1.5rem' }}>5</div>
+                <div className="fw-bold mb-2" style={{ fontSize: '1.5rem' }}>
+                  {counts.invoices}
+                </div>
                 <p className="mb-0" style={{ fontSize: '0.75rem', color: '#6c757d' }}>
                   <span className="text-success">+5%</span> increase vs last month
                 </p>
